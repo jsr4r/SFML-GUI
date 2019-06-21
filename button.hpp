@@ -1,47 +1,43 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "TextLabel.hpp"
-#include <vector>
 
-class Button: public sf::Rect<int> {
+class Button: public sf::RectangleShape {
 	private:
-		sf::Color color;
-		TextLabel text;
+		sf::Text text;
 	public:
 		//default constructor
 		Button() {
-			left = 0;
-			top = 0;
-			color = sf::Color::White;
+		}
+		//parameterized:
+		Button(sf::Vector2f &buttonPosition, sf::Color fill, sf::Color outline, sf::Vector2f &buttonSize) {
+			this->setPosition(buttonPosition);
+			this->setSize(buttonSize);
+			this->setFillColor(fill);
+			this->setOutlineColor(outline);
 		}
 
 		//accessors
-		sf::Vector2i getPosition() {
-			sf::Vector2i retPos;
-			retPos.x = left;
-			retPos.y = top;
-			return retPos;
-		}
 
-		sf::Vector2i getSize() {
-			sf::Vector2i retSize;
-			retSize.x = width;
-			retSize.y = height;
-			return retSize;
+		sf::Text getLabel() {
+			return text;
 		}
 
 		//mutators
-		void setSize(int x, int y) {
-			width = x;
-			height = y;
+		void setLabel(sf::Text &label) { //"hides" the math needed to align text with button nicely
+			text = label;
+			sf::FloatRect bounds = label.getGlobalBounds();
+			label.setPosition(this->getPosition().x + this->getSize().x / 2 - bounds.width / 2, 
+				this->getPosition().y + this->getSize().y / 2 - bounds.height);
+
 		}
 
-		void setPosition(int x, int y) {
-			left = x;
-			top = y;
+		void updateButton(sf::Vector2f &buttonPosition, sf::Vector2f &buttonSize) {
+			//set position, size
+			this->setPosition(buttonPosition);
+			this->setSize(buttonSize);
+			//attach label
+			sf::Text label = this->getLabel();
+			this->setLabel(label);
 		}
 
-		void setColor(sf::Color newColor) {
-			color = newColor;
-		}
 };
